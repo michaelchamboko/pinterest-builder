@@ -20,7 +20,8 @@ class ImageKitTests(unittest.TestCase):
             root = Path(folder)
             approved = root / 'approved.md'
             approved.write_text('- https://try.elevenlabs.io/example\n')
-            manifest = ik.batch.init_batch('pilot', root, approved, pilot=True)
+            campaign = {'ElevenLabs': {'primary_url': 'https://try.elevenlabs.io/example', 'eligible_boards': ['AI Tools & Automation']}}
+            manifest = ik.batch.init_batch('pilot', root, approved, pilot=True, campaign=campaign)
             directory = root / 'pilot'
             (directory / 'image.png').write_bytes(b'image')
             pin_id = manifest['pins'][0]['pin_id']

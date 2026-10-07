@@ -15,12 +15,30 @@ def prepare_export(batch_dir, approved_path=batch.DEFAULT_APPROVED):
         links = {}
         for pin in manifest['pins']:
             batch.check_approval(manifest, approved_path)
-            media = services.verify_media(pin['media_url'], local=directory / pin['image_path'])
+            pin.pop('media_verified_at', None)
+            pin.pop('link_verified_at', None)
+            failures = []
+            try:
+                media = services.verify_media(pin['media_url'], local=directory / pin['image_path'])
+                pin['media_verified_at'] = media['media_verified_at']
+            except (ValueError, OSError):
+                failures.append('media verification failed')
+                pin.pop('media_verified_at', None)
+            if failures:
+                pin['verification_failure'] = '; '.join(failures)
+                continue
             pair = (pin['short_url'], pin['affiliate_url'])
-            if pair not in links:
-                links[pair] = services.verify_link(*pair)
-            pin['media_verified_at'] = media['media_verified_at']
-            pin['link_verified_at'] = links[pair]['link_verified_at']
+            try:
+                if pair not in links:
+                    links[pair] = services.verify_link(*pair)
+                pin['link_verified_at'] = links[pair]['link_verified_at']
+            except (ValueError, OSError):
+                failures.append('link verification failed')
+                pin.pop('link_verified_at', None)
+            if failures:
+                pin['verification_failure'] = '; '.join(failures)
+            else:
+                pin.pop('verification_failure', None)
     return batch.export_batch(batch_dir, approved_path, verify_pins=verify_pins)
 
 

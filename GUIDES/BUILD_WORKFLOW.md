@@ -20,15 +20,16 @@ Use this sequence for every new feature, fix, or automation change in
 3. **Build.** Implement one bounded slice. Preserve exact affiliate URLs, keep secrets
    in `.env.local`, and add tests for changed behavior and failure paths.
 4. **Prove.** Run `python -m unittest discover -v` and the relevant live verification.
-   In Codex, use the bundled `@Code Review` workflow as the free alternative to
+   In Codex, use bundled `@Code Review`; never use
    [Greploop](https://github.com/michaelchamboko/build-faster-skills/blob/main/greploop/SKILL.md).
    Resolve every actionable finding, rerun checks, and stop after three failed fixes to
    identify the assumption that is probably wrong.
 5. **Finish.** Apply
    [Unslop](https://github.com/michaelchamboko/build-faster-skills/blob/main/unslop/SKILL.md)
    to documentation, marketing copy, commit messages, and PR text. Use
-   [Marketing Skills](https://github.com/coreyhaines31/marketingskills) for copy in the
-   [Pinterest Builder](https://github.com/michaelchamboko/pinterest-builder) workflow.
+   [michaelchamboko/marketingskills](https://github.com/michaelchamboko/marketingskills)
+   for copy in the [Pinterest Builder](https://github.com/michaelchamboko/pinterest-builder)
+   workflow.
    Review the staged diff and secret exclusions before committing or pushing.
 
 Efficiency means one source of truth, one bounded change, one verification loop, and
