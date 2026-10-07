@@ -1,65 +1,62 @@
 ---
-title: "Pinterest CSV Automation Implementation"
+title: "Pinterest Multi-Product CSV Automation"
 tags: [pinterest, automation, csv]
 status: active
-created: 2026-09-17
 ---
 
-# Agreed outcome
+# Approved outcome
 
-Prepare 130 Pins every three days at 21:00 Africa/Johannesburg on this computer.
-The exact 13 approved URLs each receive five visual guides and five promotional
-images. Read the adjacent `Vetted SaaS B - Content Strategy and Growth Strategy/approved-urls.md`
-before every batch and export. The two DataHawk tracking URLs remain separate.
-The user manually uploads the CSV. No Pinterest API/browser publishing is authorized
-as part of the automated producer.
+Prepare 100 Pins every three days at 21:00 Africa/Johannesburg: ten products,
+ten Pins per product. The products are Carepatron, DataHawk, ElevenLabs,
+AdCreative.ai, Snowfire, Moosend, GetResponse, Flippa, Glide, and Manychat.
+Manychat's currently approved URL is its primary. If multiple Manychat URLs are
+approved later, configuration must select one primary or fail explicitly.
 
-Use built-in Codex image generation, 2:3 PNG/JPEG images, affiliate disclosure,
-and grounded product claims. Upload to ImageKit under
-`/pinterest/<batch-id>/<vendor-and-url-id>/`. Use `justonemedia.short.gy` for new
-Short.io links, preserving each exact original affiliate URL. Keep
-`vettedsaasblueprint.s.gy` allowlisted only for legacy receipt verification.
+The user imports the CSV manually. Codex plans, generates, reviews, and repairs
+content; Python persists state and enforces evidence gates and CSV readiness.
+Keep existing ImageKit and Short.io integrations and preserve every approved
+affiliate URL and tracking parameter. The detailed operational contract is in
+[GUIDES/PINTEREST_BATCH_RUNBOOK.md](../GUIDES/PINTEREST_BATCH_RUNBOOK.md).
 
-# Export contract
+# Production contract
 
-Match the proven working Looka template exactly: seven headers named `Title`,
-`Media URL`, `Pinterest Board`, `Description`, `Link`, `Publish Date`, and `Keywords`.
-Do not add a Thumbnail column. Keep titles <=100 characters and descriptions <=500
-characters with disclosure; use relevant comma-separated Keywords.
-Public media file URLs, no authentication. Board mapping lives in
-`pinterest_batch.py`. Interleave vendors. Export on user request only. Schedule every
-row in UTC using `YYYY-MM-DDTHH:MM:SS` without a suffix, aligned to `:00` or `:30`,
-starting at least 30 minutes after export. Version exports; never overwrite or reimport
-a previously uploaded batch. Regenerate timestamps before a delayed import.
+- Cap each default batch at 100 Pins, 10 per listed product.
+- Budget image generations at `ceil(1.2 * N)`, or 120 for 100 Pins.
+- Allow at most three repair attempts for each Pin.
+- Bind structured review to hashes of the exact source, copy, and assets. Changes
+  invalidate review and dependent evidence.
+- Allow a nonempty verified subset to reach `READY_PARTIAL`; systemic failures
+  produce `BLOCKED`. Close omissions after handoff. Keep reservations through
+  handoff until import outcome is known.
+- Snapshot legacy state before migration. Do not treat legacy per-URL records or
+  human-set review flags as new product-level evidence.
+- Export the established seven-column schema with dates planned from the
+  successful final export time in Africa/Johannesburg. Add a 30-minute buffer,
+  round up to the next half-hour, and allocate one Pin per local slot from
+  09:00 through 18:30 every day. Store `Publish Date` in UTC without a suffix.
+  Reserve slots at CSV creation, consume them after whole-export upload
+  confirmation, keep them reserved while unknown, and release them only after
+  explicit whole-export cancellation. The user imports only the latest
+  validated CSV manually.
 
-# Evidence gate
+# Marketing workflow
 
-Connect and verify ImageKit and Short.io before generating a ten-Pin ElevenLabs
-pilot. User imports the pilot and confirms acceptance and dates. Then verify bulk
-scheduling beyond ten Pins before activating a production cadence anchored to the
-first production run. Local passing tests do not establish live Pinterest acceptance.
+Use `michaelchamboko/marketingskills` when installed for product marketing,
+copywriting, social content, ad creative, and copy editing. Do not install it
+silently. Report missing capabilities and keep claims grounded in approved
+product sources.
 
-# Implementation ledger
+# Providers and acceptance evidence
 
-- Ruling: the requested folder is now a Git repository on `main`, with
-  `https://github.com/michaelchamboko/pinterest-builder.git` as `origin`.
-- Ruling: use a deterministic local Python state/CSV runner and agent instructions
-  for built-in image generation. A Python process cannot directly call Codex's
-  conversation-only image tool. No paid image API substitution is authorized.
-- Ruling: store the Short.io secret locally and reference it through a launcher;
-  never store a literal key in Codex arguments, source, or logs.
-- ImageKit restricted OAuth failed; the user supplied a private API key instead.
-  Official key-based MCP and local upload helper are configured; live reads and uploads pass.
-- Short.io supplied key verified for `justonemedia.short.gy`. Ten pilot images uploaded
-  with durable receipts and original-byte public delivery checks; 62 local tests pass.
-- User authorized agent submission of the initial ten-Pin pilot. Production uploads remain manual.
-- Core owner: batch_core. Service helpers owner: service_helpers.
-  Independent review: core_review. Root owns integration, docs, and release evidence.
+Keep ImageKit for public media and `justonemedia.short.gy` for new Short.io
+links. Use actual service responses for connection, upload, and redirect
+evidence. Local tests or HTTP success do not prove Pinterest acceptance. The
+producer does not publish through Pinterest browser or API automation.
 
-# Sources
+# Legacy implementation record
 
-- https://help.pinterest.com/en/business/article/bulk-upload-video-pins
-- https://help.pinterest.com/en/business/article/schedule-pins
-- https://imagekit.io/docs/build-with-ai
-- https://docs.short.io/articles/integrations-and-extensions/direct-integrations/how-to-integrate-and-use-short.io-with-your-mcp-enabled-service
-- https://developers.short.io/reference/post_links
+Earlier records describe a 130-Pin, 13-URL proposal and an ElevenLabs pilot.
+Treat their manifests and receipts as migration inputs only and snapshot them
+before migration. Verify runtime behavior against the runbook before calling a
+new batch ready. The initial ten-Pin pilot authorization does not authorize
+agent uploads for recurring production.
