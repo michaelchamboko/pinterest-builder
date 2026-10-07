@@ -1,0 +1,17 @@
+# Local credentials
+.env.local
+
+# Python runtime cache
+__pycache__/
+
+# Private OAuth credentials, state, and helper output
+imagekit_oauth.json
+.pinterest-*.local.json
+.pinterest-private-*
+.pinterest-oauth*.log
+
+# Generated batches, verification evidence, and local connection logs
+batches/
+.scratch/
+*.local.json
+.venv/
